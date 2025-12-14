@@ -21,3 +21,6 @@ async def create_user(email: str, password: str, role: str):
         "email": email,
         "role": role
     }
+async def get_user_by_email(email: str):
+    db = await get_database()
+    return await db["users"].find_one({"email": email})

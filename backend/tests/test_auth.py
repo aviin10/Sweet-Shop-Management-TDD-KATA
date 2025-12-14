@@ -51,3 +51,31 @@ async def test_user_registration_duplicate_email(monkeypatch):
         )
 
     assert response.status_code == 409
+
+@pytest.mark.asyncio
+async def test_login_success(monkeypatch):
+    async def mock_get_user(email):
+        return {
+            "email": email,
+            "password": "$2b$12$dummyhash",
+            "role": "user"
+        }
+
+    async def mock_verify_password(password, hashed):
+        return True
+
+    monkeypatch.setattr("app.routes.auth.get_user_by_email", mock_get_user)
+    monkeypatch.setattr("app.routes.auth.verify_password", mock_verify_password)
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.post(
+            "/api/auth/login",
+            json={
+                "email": "test@example.com",
+                "password": "secret123"
+            }
+        )
+
+    assert response.status_code == 200
+    assert "access_token" in response.json()
