@@ -1,4 +1,8 @@
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status, Query, HTTPException
+from app.services.inventory_service import (
+    purchase_sweet_service,
+    restock_sweet_service
+)
 from app.schemas.sweet import SweetCreate
 from app.core.deps import get_current_user, require_admin
 from app.services.sweet_service import create_sweet, list_sweets
@@ -53,3 +57,19 @@ async def delete_sweet(
     admin=Depends(require_admin)
 ):
     await delete_sweet(id)
+
+@router.post("/{id}/purchase")
+async def purchase_sweet(
+    id: str,
+    current_user=Depends(get_current_user)
+):
+    return await purchase_sweet_service(id)
+
+
+@router.post("/{id}/restock")
+async def restock_sweet(
+    id: str,
+    quantity: int,
+    current_user=Depends(require_admin)
+):
+    return await restock_sweet_service(id, quantity)

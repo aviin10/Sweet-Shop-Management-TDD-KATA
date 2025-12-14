@@ -1,5 +1,6 @@
 from app.db.mongodb import get_database
 from bson import ObjectId
+from pymongo import ReturnDocument
 async def create_sweet(data: dict):
     db = await get_database()
     result = await db["sweets"].insert_one(data)
@@ -49,3 +50,34 @@ async def delete_sweet(id: str):
     db = await get_database()
     await db["sweets"].delete_one({"_id": ObjectId(id)})
     return True
+
+async def purchase_sweet(id: str):
+    db = await get_database()
+
+    sweet = await db["sweets"].find_one_and_update(
+        {"_id": ObjectId(id), "quantity": {"$gt": 0}},
+        {"$inc": {"quantity": -1}},
+        return_document=ReturnDocument.AFTER
+    )
+
+    if not sweet:
+        return None
+
+    sweet["id"] = str(sweet["_id"])
+    return sweet
+
+
+async def restock_sweet(id: str, quantity: int):
+    db = await get_database()
+
+    sweet = await db["sweets"].find_one_and_update(
+        {"_id": ObjectId(id)},
+        {"$inc": {"quantity": quantity}},
+        return_document=ReturnDocument.AFTER
+    )
+
+    if not sweet:
+        return None
+
+    sweet["id"] = str(sweet["_id"])
+    return sweet
