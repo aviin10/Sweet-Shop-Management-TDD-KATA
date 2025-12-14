@@ -79,14 +79,7 @@ python -m venv venv
 pip install fastapi uvicorn pymongo python-jose passlib pytest
 ```
 
-### 3️⃣ Configure Environment Variables
-Create a .env file or set variables:
-```md
-
-MONGODB_URL=<your_mongodb_atlas_url>
-JWT_SECRET_KEY=<your_secret_key>
-```
-### 4️⃣ Run the Server
+### 3️⃣ Run the Server
 ```md
 uvicorn app.main:app --reload
 ```
