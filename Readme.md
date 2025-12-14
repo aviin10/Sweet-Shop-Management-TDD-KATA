@@ -68,8 +68,9 @@ The backend is built using **FastAPI** and **MongoDB**, following clean architec
 ## 🚀 How to Run the Backend
 
 ### 1️⃣ Create Virtual Environment
-- ```bash
-- python -m venv venv`
+```md
+python -m venv venv
+```
 - `source venv/bin/activate   # Linux / Mac`
 - `venv\Scripts\activate      # Windows`
 
